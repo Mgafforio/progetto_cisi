@@ -2,8 +2,8 @@
 close all
 
 % ENTRAMBI NON POSSONO ESSERE TRUE
-multiplot = false;  %<------------ NEW VARIABLE TO SET MULTIPLOT OPTION
-innovaz_plot = true;
+multiplot = true;  %<------------ NEW VARIABLE TO SET MULTIPLOT OPTION
+innovaz_plot = false;
 
 dt  =  0.06;
 
@@ -22,6 +22,11 @@ q_hat_computed = get(out, "q_hat_computed");
 q_true = get(out, "q_true");
 x_error = get(out, "x_error");
 theta_error = get(out, "theta_error");
+
+% Smoother
+% q_smoother_EKF = Regolarizzazione_EKF();
+q_smoother_EKF = q_smoother;    %TODO
+
 
 % Innovazione misure EKF
 e_k_D = get(out, "e_k_D");
@@ -124,6 +129,8 @@ if multiplot
         hold on
         plot(q_true.Time(1:i_sampled), q_hat_computed.Data(1:i_sampled, 4), 'r', 'LineWidth', 1.5, 'DisplayName', "theta\_EKF");
         plot(q_true.Time(1:i_sampled), q_true.Data(2, 1:i_sampled), 'g', 'LineWidth', 1.5, 'DisplayName', "theta\_true");
+        plot(q_true.Time(1:i_sampled), q_smoother_EKF(4,1:i_sampled), 'b', 'LineWidth', 1.5, 'DisplayName', "theta\_smooth");
+        
         title('theta\_hat vs theta\_true');
         xlabel('Time');
         ylabel('theta [rad]');
@@ -189,7 +196,7 @@ if innovaz_plot
         i_sampled = round(i_sampled + (dt/min_sample_rates));
         subplot(3,2,3);
         hold on
-        plot(e_k_D.Time(1:i_sampled), e_k_D.Data(1:i_sampled), 'b', 'LineWidth', 1.5, 'DisplayName', "e_k_D");
+        plot(e_k_D.Time(1:i_sampled), e_k_D.Data(1:i_sampled), 'b', 'LineWidth', 1, 'DisplayName', "e_k_D");
         title('Innovazione misura D');
         xlabel('Time');
         ylabel('[m]');
@@ -199,7 +206,7 @@ if innovaz_plot
         % Plot innovazione d1
         subplot(3,2,4);
         hold on
-        plot(e_k_d1.Time(1:i_sampled), e_k_d1.Data(1:i_sampled), 'b', 'LineWidth', 1.5, 'DisplayName', "e\_k\_d1");
+        plot(e_k_d1.Time(1:i_sampled), e_k_d1.Data(1:i_sampled), 'b', 'LineWidth', 1, 'DisplayName', "e\_k\_d1");
         title('Innovazione misura d1');
         xlabel('Time');
         ylabel('[m]');

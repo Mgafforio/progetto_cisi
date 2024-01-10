@@ -2,8 +2,8 @@
 close all
 
 % ENTRAMBI NON POSSONO ESSERE TRUE
-multiplot = false;  %<------------ NEW VARIABLE TO SET MULTIPLOT OPTION
-innovaz_plot = true;
+multiplot = true;  %<------------ NEW VARIABLE TO SET MULTIPLOT OPTION
+innovaz_plot = false;
 
 dt  =  0.06;
 
@@ -22,6 +22,11 @@ q_hat_computed = get(out, "q_hat_computed");
 q_true = get(out, "q_true");
 x_error = get(out, "x_error");
 theta_error = get(out, "theta_error");
+
+% Smoother
+% q_smoother_EKF = Regolarizzazione_EKF();
+q_smoother_EKF = q_smoother;    %TODO
+
 
 % Innovazione misure EKF
 e_k_D = get(out, "e_k_D");
@@ -124,11 +129,13 @@ if multiplot
         hold on
         plot(q_true.Time(1:i_sampled), q_hat_computed.Data(1:i_sampled, 4), 'r', 'LineWidth', 1.5, 'DisplayName', "theta\_EKF");
         plot(q_true.Time(1:i_sampled), q_true.Data(2, 1:i_sampled), 'g', 'LineWidth', 1.5, 'DisplayName', "theta\_true");
+        plot(q_true.Time(1:i_sampled), q_smoother_EKF(1:i_sampled), 'b', 'LineWidth', 1.5, 'DisplayName', "theta\_smooth");
+        
         title('theta\_hat vs theta\_true');
         xlabel('Time');
         ylabel('theta [rad]');
         grid on;
-        legend("theta\_EKF", "theta\_true");
+        legend("theta\_EKF", "theta\_true", "theta\_smooth");
     
         % Plot x_error
         subplot(3,2,5);
